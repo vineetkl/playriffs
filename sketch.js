@@ -4,6 +4,8 @@ var canvas1; //to place convas behind html
 
 let osc, playing, freq, amp; //four mouse or touch sound
 
+
+
 //for straight shooting stars
 let vibrations = [];
 let a = 0;
@@ -63,6 +65,9 @@ function preload() {
     hs = loadSound("audio/hs.mp3");
     d1 = loadSound("audio/d1.mp3");
     d2 = loadSound("audio/d2.mp3");
+
+    //moon
+
 }
 
 function setup() {
@@ -73,8 +78,10 @@ function setup() {
     canvas.touchMoved(playOscillator);
     canvas.mousePressed(playOscillator);
     //canvas.mouseClicked(playOscillator);
-    canvas.touchStarted(playOscillator);
+    //canvas.touchStarted(playOscillator);
     osc = new p5.Oscillator('sine');
+
+
 
     //
     bgloop.loop(); //loop bgmusic
@@ -152,6 +159,21 @@ function draw() {
     }
     pop();
 
+    push();
+    noStroke();
+    fill(255, 255, 255, 255);
+    translate(width * 0.2, height * 0.5);
+    rotate(frameCount / 1.0);
+    nstar(0, 0, 0.5, 5, 4);
+    pop();
+
+    push();
+    noStroke();
+    fill(255, 255, 255, 255);
+    rotate(frameCount / 10.0);
+    nstar(random(width), random(height), 0.5, 2, 4);
+    pop();
+
 }
 
 function playOscillator() {
@@ -188,6 +210,7 @@ function keyPressed() {
     }
 
     //now the melody riffs:
+    //a
     if (keyCode == '65') {
         m1.play();
 
@@ -201,7 +224,7 @@ function keyPressed() {
     }
 
 
-
+    //s
     if (keyCode == '83') {
         h1.play();
 
@@ -214,6 +237,7 @@ function keyPressed() {
         distY = endY - beginY;
 
     }
+    //d
     if (keyCode == '68') {
         b1.play();
         pct = 0.0;
@@ -225,26 +249,55 @@ function keyPressed() {
         distY = endY - beginY;
         exponent = 3
     }
+    //f
     if (keyCode == '70') {
         m2.play();
         fill(252, 168, 255, 200);
         rect(0, 0, width, height);
     }
+    //g
     if (keyCode == '71') {
         h2.play();
 
+
+    }
+    //h
+    if (keyCode == '72') {
+        b2.play();
+        push();
+        fill(255, 255, 255, 255);
+        stroke(255);
+        line(0, 0, width, height);
+
+
+    }
+    //j
+    if (keyCode == '74') {
+        ms.play();
+        fill(255, 249, 69, 255);
+        rect(0, 0, width, height);
+        vibrations.push(new SParticle(random(0, 50), random(0, 50)));
+        vibrations.push(new SParticle(random(0, 50), random(0, 50)));
+        vibrations.push(new SParticle(random(0, 50), random(0, 50)));
         vibrations.push(new SParticle(random(0, 50), random(0, 50)));
     }
-    if (keyCode == '72') { b2.play(); }
-    if (keyCode == '74') { ms.play(); }
-    if (keyCode == '75') { hs.play(); }
-    if (keyCode == '76') { bs.play(); }
+    //k
+    if (keyCode == '75') {
+        hs.play();
+        fill(138, 255, 245, 255);
+        rect(0, 0, width, height);
+        vibrations.push(new LParticle(random(width - 100, width), random(0, 150)));
+    }
+    //l
+    if (keyCode == '76') {
+        bs.play();
+        fill(255, 89, 230, 255);
+        rect(0, 0, width, height);
+        vibrations.push(new BParticle(random(width / 2, width), random((height / 2), height)));
+
+    }
     //return false;
 }
-
-
-
-//objects
 
 //gradient
 function setGradient(x, y, w, h, c1, c2, axis) {
@@ -265,7 +318,21 @@ function setGradient(x, y, w, h, c1, c2, axis) {
         }
     }
 }
-
+//objects
+function nstar(x, y, radius1, radius2, npoints) {
+    let angle = TWO_PI / npoints;
+    let halfAngle = angle / 2.0;
+    beginShape();
+    for (let a = 0; a < TWO_PI; a += angle) {
+        let sx = x + cos(a) * radius2;
+        let sy = y + sin(a) * radius2;
+        vertex(sx, sy);
+        sx = x + cos(a + halfAngle) * radius1;
+        sy = y + sin(a + halfAngle) * radius1;
+        vertex(sx, sy);
+    }
+    endShape(CLOSE);
+}
 class Particle {
     // setting the co-ordinates, radius and the
     // speed of a particle in both the co-ordinates axes.
@@ -273,8 +340,8 @@ class Particle {
         this.x = random(0, windowWidth);
         this.y = random(0, windowHeight);
         this.r = random(0, 2);
-        this.xSpeed = random(-0.1, 0.2);
-        this.ySpeed = random(-0.1, 0.2);
+        this.xSpeed = random(-0.1, 0.5);
+        this.ySpeed = random(-0.1, 0.5);
     }
 
     // creation of a particle.
@@ -306,7 +373,6 @@ class Particle {
         });
     }
 }
-
 class SParticle {
 
     constructor(x, y) {
@@ -330,7 +396,7 @@ class SParticle {
     }
 
     show() {
-        stroke(255, 100);
+        stroke(255, 245, 110, 50);
         beginShape();
         for (let i = 0; i < this.history.length; i++) {
             let pos = this.history[i];
@@ -340,7 +406,82 @@ class SParticle {
         }
 
         noStroke();
-        fill(100);
+        fill(255, 245, 110);
         ellipse(this.x, this.y, 2, 2);
+    }
+}
+class BParticle {
+
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.history = [];
+    }
+
+    update() {
+        this.x = this.x + (-4);
+        this.y = this.y + (-5);
+
+        let v = createVector(this.x, this.y);
+
+        this.history.push(v);
+        //console.log(this.history.length);
+
+        if (this.history.length > 20) {
+            this.history.splice(0, 1);
+        }
+    }
+
+    show() {
+        strokeWeight(0.5);
+        stroke(255, 153, 253, 100);
+        beginShape();
+        for (let i = 0; i < this.history.length; i++) {
+            let pos = this.history[i];
+            noFill();
+            vertex(pos.x, pos.y);
+            endShape();
+        }
+
+        noStroke();
+        fill(255, 153, 253, 100);
+        ellipse(this.x, this.y, 1, 1);
+    }
+}
+class LParticle {
+
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.history = [];
+    }
+
+    update() {
+        this.x = this.x + (-4);
+        this.y = this.y + (2);
+
+        let v = createVector(this.x, this.y);
+
+        this.history.push(v);
+        //console.log(this.history.length);
+
+        if (this.history.length > 40) {
+            this.history.splice(0, 1);
+        }
+    }
+
+    show() {
+        stroke(148, 255, 253, 240);
+        beginShape();
+        for (let i = 0; i < this.history.length; i++) {
+            let pos = this.history[i];
+            noFill();
+            vertex(pos.x, pos.y);
+            endShape();
+        }
+
+        noStroke();
+        fill(148, 255, 253, 240);
+        ellipse(this.x, this.y, 1, 1);
     }
 }
