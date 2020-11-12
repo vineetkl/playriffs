@@ -1,0 +1,33 @@
+https://www.youtube.com/watch?v=vqE8DMfOajk&feature=youtu.be
+
+//trail
+background function erases the background
+but for trail - it dr aws forever :#
+object to store a history of it's own path.
+
+particle, 
+has an x, 
+has a y,
+>history >> array [] older x and ys yo
+
+every time the object moves, i wanna store that value
+
+this.history.push(this.x,this.y);
+
+what iff a vectorrrrrrrrrrrrrrr
+
+single variable
+createVector(_,_);
+
+vector movies in a direction
+
+[x,y,x,y,x,y,x,y,x,y]
+[(x,y),(x,y),(x,y),(x,y),(x,y)]
+
+
+for js interactivity - 
+http://jsfiddle.net/zMrtL/
+
+
+for animating arc etc.
+https://bl.ocks.org/Ucodia/65ada7ac716e5aa2146201ae379231a7
