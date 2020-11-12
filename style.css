@@ -22,13 +22,19 @@
     }
     
     #key.hidden {
-        display: block;
+        display: none;
         margin-left: auto;
         margin-right: auto;
         width: 40%;
         padding-top: 10%;
-        visibility: visible;
+        visibility: hidden;
         z-index: -3;
-        opacity: 1%;
         animation-duration: 1s;
+    }
+    
+    #fg {
+        position: fixed;
+        bottom: 0px;
+        max-width: 100vw;
+        z-index: -2;
     }

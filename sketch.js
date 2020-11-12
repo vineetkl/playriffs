@@ -1,7 +1,13 @@
 let particles = []; // an array to add multiple particles for stars
+
 var canvas1; //to place convas behind html
-let osc, playing, freq, amp;
-//
+
+let osc, playing, freq, amp; //four mouse or touch sound
+
+//for straight shooting stars
+let vibrations = [];
+let a = 0;
+
 //audios-
 var bgloop; //background loop
 var pwk; //percussions //wrist kick
@@ -60,7 +66,6 @@ function preload() {
 }
 
 function setup() {
-    frameRate(60);
     canvas = createCanvas(windowWidth, windowHeight); //initite
     canvas.position(0, 0);
     canvas.style('z-index', '-1');
@@ -80,6 +85,14 @@ function setup() {
     noStroke();
     distX = endX - beginX;
     distY = endY - beginY;
+
+
+    //shooting star
+    for (let i = 0; i < 2; i++) {
+        vibrations.push(new SParticle(random(width), random(height)));
+    }
+    noCursor();
+
 }
 
 function draw() {
@@ -113,9 +126,9 @@ function draw() {
     freq = constrain(map(mouseX, 0, width, 100, 500), 100, 500);
     amp = constrain(map(mouseY, height, 0, 0, 1), 0, 1);
 
-    text('tap to play', 20, 20);
-    text('freq: ' + freq, 20, 40);
-    text('amp: ' + amp, 20, 60);
+    //text('tap to play', 20, 20);
+    //text('freq: ' + freq, 20, 40);
+    //text('amp: ' + amp, 20, 60);
 
     if (playing) {
         // smooth the transitions by 0.1 seconds
@@ -123,6 +136,21 @@ function draw() {
         osc.amp(amp, 0.1);
     }
     pop()
+
+    push()
+    strokeWeight(0.5);
+    stroke(255);
+    line(pmouseX, pmouseY, mouseX, mouseY);;
+    //ellipse(pmouseX, pmouseY, 1, 1);
+    //return false;
+    pop();
+
+    push();
+    for (let i = 0; i < vibrations.length; i++) {
+        vibrations[i].show();
+        vibrations[i].update();
+    }
+    pop();
 
 }
 
@@ -199,10 +227,14 @@ function keyPressed() {
     }
     if (keyCode == '70') {
         m2.play();
-        fill(0, 200);
+        fill(252, 168, 255, 200);
         rect(0, 0, width, height);
     }
-    if (keyCode == '71') { h2.play(); }
+    if (keyCode == '71') {
+        h2.play();
+
+        vibrations.push(new SParticle(random(0, 50), random(0, 50)));
+    }
     if (keyCode == '72') { b2.play(); }
     if (keyCode == '74') { ms.play(); }
     if (keyCode == '75') { hs.play(); }
@@ -272,5 +304,43 @@ class Particle {
                 line(this.x, this.y, element.x, element.y);
             }
         });
+    }
+}
+
+class SParticle {
+
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.history = [];
+    }
+
+    update() {
+        this.x = this.x + (4);
+        this.y = this.y + (1);
+
+        let v = createVector(this.x, this.y);
+
+        this.history.push(v);
+        //console.log(this.history.length);
+
+        if (this.history.length > 5) {
+            this.history.splice(0, 1);
+        }
+    }
+
+    show() {
+        stroke(255, 100);
+        beginShape();
+        for (let i = 0; i < this.history.length; i++) {
+            let pos = this.history[i];
+            noFill();
+            vertex(pos.x, pos.y);
+            endShape();
+        }
+
+        noStroke();
+        fill(100);
+        ellipse(this.x, this.y, 2, 2);
     }
 }
