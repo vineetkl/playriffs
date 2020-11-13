@@ -1,3 +1,13 @@
+window.addEventListener("keydown", toggle, false);
+
+function toggle(k) {
+    if (k.keyCode == "32") {
+        $("#key").toggleClass('hidden');
+    }
+}
+
+
+
 let particles = []; // an array to add multiple particles for stars
 
 //var canvas1; //to place convas behind html
