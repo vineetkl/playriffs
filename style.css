@@ -31,10 +31,3 @@
         z-index: -3;
         animation-duration: 1s;
     }
-    
-    #fg {
-        position: fixed;
-        bottom: 0px;
-        max-width: 100vw;
-        z-index: -2;
-    }
