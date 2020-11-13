@@ -283,7 +283,7 @@ function keyPressed() {
         line(0, 0, width, height);
         line(0, 0, width, height);
         line(0, 0, width, height);
-        elipse(random(100, (width - 100)), random(100, (height - 100)));
+        ellipse(random(100, (width - 100)), random(100, (height - 100)));
         pop();
 
 
