@@ -1,8 +1,10 @@
 let particles = []; // an array to add multiple particles for stars
 
-var canvas1; //to place convas behind html
+//var canvas1; //to place convas behind html
 
 let osc, playing, freq, amp; //four mouse or touch sound
+
+let ar = 0; //rotating arcs
 
 
 
@@ -71,6 +73,7 @@ function preload() {
 }
 
 function setup() {
+
     canvas = createCanvas(windowWidth, windowHeight); //initite
     canvas.position(0, 0);
     canvas.style('z-index', '-1');
@@ -80,6 +83,7 @@ function setup() {
     //canvas.mouseClicked(playOscillator);
     //canvas.touchStarted(playOscillator);
     osc = new p5.Oscillator('sine');
+    angleMode(DEGREES);
 
 
 
@@ -103,6 +107,7 @@ function setup() {
 }
 
 function draw() {
+
     //background
     var color1 = color(25, 20, 82); //gradient upper color
     var color2 = color(57, 109, 189); //gradient lower color
@@ -125,7 +130,7 @@ function draw() {
         y = beginY + pow(pct, exponent) * distY;
     }
     fill(random(200, 255));
-    ellipse(x, y, random(0.2, 3), random(0.2, 3));
+    ellipse(x, y, random(1, 3), random(1, 3));
     pop()
 
     //sound oscillator
@@ -163,7 +168,7 @@ function draw() {
     noStroke();
     fill(255, 255, 255, 255);
     translate(width * 0.2, height * 0.5);
-    rotate(frameCount / 1.0);
+    rotate(frameCount / 20.0);
     nstar(0, 0, 0.5, 5, 4);
     pop();
 
@@ -174,20 +179,26 @@ function draw() {
     nstar(random(width), random(height), 0.5, 2, 4);
     pop();
 
+    fill(random(200, 255));
+    ellipse(x, y, random(1, 3), random(1, 3));
+
+
 }
 
-function playOscillator() {
-    // starting an oscillator on a user gesture will enable audio
-    // in browsers that have a strict autoplay policy.
-    // See also: userStartAudio();
-    osc.start();
-    playing = true;
-}
+function roundtrial() {
 
-function mouseReleased() {
-    // ramp amplitude to 0 over 0.5 seconds
-    osc.amp(0, 0.5);
-    playing = false;
+    push();
+    translate(width / 2, height / 2);
+    noFill();
+    stroke(255);
+    strokeWeight(0.2);
+    rotate(ar);
+    for (let i = width - 60; i < width - 30; i = i + 5) {
+        arc(0, 0, i, i, i / 100, i / 2);
+    }
+    ar = ar + 0.001;
+    pop();
+
 }
 
 function keyPressed() {
@@ -214,13 +225,10 @@ function keyPressed() {
     if (keyCode == '65') {
         m1.play();
 
-        pct = 0.0;
-        beginX = random(80, 160);
-        beginY = random(80, 160);
-        endX = width + 5;
-        endY = height + 5;
-        distX = endX - beginX;
-        distY = endY - beginY;
+        roundtrial();
+        setTimeout(rountrial.hide(), 700);
+
+
     }
 
 
@@ -228,47 +236,79 @@ function keyPressed() {
     if (keyCode == '83') {
         h1.play();
 
-        pct = 0.0;
-        beginX = random((width - (3 * width / 4)), (width - (width / 4)));
-        beginY = -3;
-        endX = (width - (width / 2));
-        endY = height + 3;
-        distX = endX - beginX;
-        distY = endY - beginY;
-
+        push();
+        translate(width / 2, height / 2);
+        noFill();
+        stroke(255);
+        strokeWeight(0.3);
+        rotate(ar);
+        for (let i = width - 60; i < width - 30; i = i + 5) {
+            arc(0, 0, i, i, random(40, 42), random(200, 250));
+        }
+        ar = ar + 0.1;
+        pop();
     }
     //d
     if (keyCode == '68') {
         b1.play();
-        pct = 0.0;
-        beginX = random((width - (3 * width / 4)), (width - (width / 4)));
-        beginY = -3;
-        endX = (width - (width / 2));
-        endY = height + 3;
-        distX = endX - beginX;
-        distY = endY - beginY;
-        exponent = 3
+
+
     }
     //f
     if (keyCode == '70') {
         m2.play();
         fill(252, 168, 255, 200);
         rect(0, 0, width, height);
+        fill(255, 244, 36);
+        ellipse(50, 50, 5, 5);
+        pct = 0.0;
+        beginX = random(80, 160);
+        beginY = random(80, 160);
+        endX = width + 5;
+        endY = height + 5;
+        distX = endX - beginX;
+        distY = endY - beginY;
+
+
     }
     //g
     if (keyCode == '71') {
         h2.play();
 
 
+        push();
+        fill(90, 252, 3, 255);
+        rect(0, 0, width, height);
+        stroke(255);
+        line(0, 0, width, height);
+        line(0, 0, width, height);
+        line(0, 0, width, height);
+        elipse(random(100, (width - 100)), random(100, (height - 100)));
+        pop();
+
+
+
+
     }
     //h
     if (keyCode == '72') {
         b2.play();
-        push();
-        fill(255, 255, 255, 255);
-        stroke(255);
-        line(0, 0, width, height);
 
+        push();
+        translate(width / 2, height / 2);
+        fill(235, 52, 67, 255);
+        ellipse(0, 0, 100, 100);
+        pop()
+        push();
+        fill(255, 238, 0, 255);
+        ellipse(random(0, width), random(0, height), 50, 50);
+        fill(84, 99, 214);
+        ellipse(random(0, width), random(0, height), 20, 20);
+        fill(230, 69, 208);
+        ellipse(random(0, width), random(0, height), 60, 60);
+        fill(201, 255, 179);
+        ellipse(random(0, width), random(0, height), 70, 70);
+        pop();
 
     }
     //j
@@ -276,10 +316,12 @@ function keyPressed() {
         ms.play();
         fill(255, 249, 69, 255);
         rect(0, 0, width, height);
+        push();
         vibrations.push(new SParticle(random(0, 50), random(0, 50)));
         vibrations.push(new SParticle(random(0, 50), random(0, 50)));
         vibrations.push(new SParticle(random(0, 50), random(0, 50)));
         vibrations.push(new SParticle(random(0, 50), random(0, 50)));
+        pop();
     }
     //k
     if (keyCode == '75') {
@@ -298,6 +340,22 @@ function keyPressed() {
     }
     //return false;
 }
+
+function playOscillator() {
+    // starting an oscillator on a user gesture will enable audio
+    // in browsers that have a strict autoplay policy.
+    // See also: userStartAudio();
+    osc.start();
+    playing = true;
+}
+
+function mouseReleased() {
+    // ramp amplitude to 0 over 0.5 seconds
+    osc.amp(0, 0.5);
+    playing = false;
+}
+
+
 
 //gradient
 function setGradient(x, y, w, h, c1, c2, axis) {
