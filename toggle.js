@@ -28,3 +28,9 @@ function toggle(k) {
         $("#key").toggleClass('hidden');
     }
 }
+
+$(document).on("keypress", "#key", function(e) {
+    if (e.keyCode == 32 || e.which == '32') {
+        $("#key").toggleClass('hidden');
+    }
+});
