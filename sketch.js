@@ -7,6 +7,7 @@ function toggle(k) {
 }
 
 
+p5.disableFriendlyErrors = true
 
 let particles = []; // an array to add multiple particles for stars
 
@@ -119,8 +120,8 @@ function setup() {
 function draw() {
 
     //background
-    var color1 = color(25, 20, 82); //gradient upper color
-    var color2 = color(57, 109, 189); //gradient lower color
+    var color1 = color(9, 27, 56); //gradient upper color
+    var color2 = color(30, 66, 125); //gradient lower color
     setGradient(0, 0, windowWidth, windowHeight, color1, color2, "Y");
 
     //bgstars
@@ -195,21 +196,7 @@ function draw() {
 
 }
 
-function roundtrial() {
 
-    push();
-    translate(width / 2, height / 2);
-    noFill();
-    stroke(255);
-    strokeWeight(0.2);
-    rotate(ar);
-    for (let i = width - 60; i < width - 30; i = i + 5) {
-        arc(0, 0, i, i, i / 100, i / 2);
-    }
-    ar = ar + 0.001;
-    pop();
-
-}
 
 function keyPressed() {
 
@@ -234,10 +221,9 @@ function keyPressed() {
     //a
     if (keyCode == '65') {
         m1.play();
-
-        roundtrial();
-        setTimeout(rountrial.hide(), 700);
-
+        fill(92, 255, 209);
+        rect(0, 0, width, height);
+        vibrations.push(new AParticle(random(0, width), random(0, height)));
 
     }
 
@@ -245,22 +231,16 @@ function keyPressed() {
     //s
     if (keyCode == '83') {
         h1.play();
-
-        push();
-        translate(width / 2, height / 2);
-        noFill();
-        stroke(255);
-        strokeWeight(0.3);
-        rotate(ar);
-        for (let i = width - 60; i < width - 30; i = i + 5) {
-            arc(0, 0, i, i, random(40, 42), random(200, 250));
-        }
-        ar = ar + 0.1;
-        pop();
+        vibrations.push(new SSParticle(width / 2, height / 2));
     }
     //d
     if (keyCode == '68') {
         b1.play();
+        fill(219, 255, 245);
+        rect(0, 0, width, height);
+        vibrations.push(new DParticle(random(0, width), random(0, height)));
+        vibrations.push(new DParticle(random(0, width), random(0, height)));
+        vibrations.push(new DParticle(random(0, width), random(0, height)));
 
 
     }
@@ -401,15 +381,15 @@ function nstar(x, y, radius1, radius2, npoints) {
     }
     endShape(CLOSE);
 }
-class Particle {
+class Particle { // bg stars
     // setting the co-ordinates, radius and the
     // speed of a particle in both the co-ordinates axes.
     constructor() {
         this.x = random(0, windowWidth);
         this.y = random(0, windowHeight);
-        this.r = random(0, 2);
-        this.xSpeed = random(-0.1, 0.5);
-        this.ySpeed = random(-0.1, 0.5);
+        this.r = random(0, 2.5);
+        this.xSpeed = random(-0.1, 0.7);
+        this.ySpeed = random(-0.1, 0.7);
     }
 
     // creation of a particle.
@@ -441,6 +421,55 @@ class Particle {
         });
     }
 }
+
+
+class SSParticle {
+
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.history = [];
+    }
+
+    update() {
+        this.x = this.x + (4);
+        this.y = this.y + (1000);
+
+        let v = createVector(this.x, this.y);
+
+        this.history.push(v);
+        //console.log(this.history.length);
+
+        if (this.history.length > 5) {
+            this.history.splice(0, 1);
+        }
+    }
+
+    show() {
+        stroke(255, 245, 110, 50);
+        beginShape();
+        for (let i = 0; i < this.history.length; i++) {
+            let pos = this.history[i];
+            noFill();
+            vertex(pos.x, pos.y);
+            endShape();
+        }
+
+        stroke(255, 255, 242);
+        strokeWeight(0.2);
+        noFill(255, 255, 242);
+        ellipse(this.x, this.y, width, width);
+        ellipse(this.x, this.y, width - 10, width - 10);
+        ellipse(this.x, this.y, width - 20, width - 20);
+        ellipse(this.x, this.y, width - 30, width - 30);
+        ellipse(this.x, this.y, width - 40, width - 40);
+        ellipse(this.x, this.y, width - 50, width - 50);
+        ellipse(this.x, this.y, width - 60, width - 60);
+        ellipse(this.x, this.y, width - 70, width - 70);
+    }
+}
+
+
 class SParticle {
 
     constructor(x, y) {
@@ -551,5 +580,102 @@ class LParticle {
         noStroke();
         fill(148, 255, 253, 240);
         ellipse(this.x, this.y, 1, 1);
+    }
+}
+
+class AParticle {
+
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.history = [];
+    }
+
+    update() {
+        this.x = this.x + random(-100, 100);
+        this.y = this.y + random(-100, 100);
+
+        let v = createVector(this.x, this.y);
+
+        this.history.push(v);
+        //console.log(this.history.length);
+
+        if (this.history.length > 6) {
+            this.history.splice(0, 1);
+        }
+    }
+
+    show() {
+        stroke(92, 255, 209);
+        strokeWeight(0.5);
+        beginShape();
+        for (let i = 0; i < this.history.length; i++) {
+            let pos = this.history[i];
+            noFill();
+            vertex(pos.x, pos.y);
+            endShape();
+        }
+
+        noStroke();
+        fill(92, 255, 209);
+        ellipse(this.x, this.y, 2, 2);
+    }
+}
+
+class DParticle {
+
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.history = [];
+    }
+
+    update() {
+        this.x = this.x + random(-100, 100);
+        this.y = this.y + random(-100, 100);
+
+        let v = createVector(this.x, this.y);
+
+        this.history.push(v);
+        //console.log(this.history.length);
+
+        if (this.history.length > 6) {
+            this.history.splice(0, 1);
+        }
+    }
+
+    show() {
+        stroke(239, 255, 255);
+        strokeWeight(0.03);
+        beginShape();
+        for (let i = 0; i < this.history.length; i++) {
+            let pos = this.history[i];
+            noFill();
+            vertex(pos.x, pos.y);
+            endShape();
+        }
+
+        noStroke();
+        fill(219, 255, 245);
+        ellipse(this.x, this.y, 1, 1);
+    }
+}
+
+
+
+class roundtrial {
+
+    show() {
+        push();
+        translate(width / 2, height / 2);
+        noFill();
+        stroke(255);
+        strokeWeight(0.2);
+        rotate(ar);
+        for (let i = width - 60; i < width - 30; i = i + 5) {
+            arc(0, 0, i, i, i / 100, i / 2);
+        }
+        ar = ar + 0.001;
+        pop();
     }
 }
