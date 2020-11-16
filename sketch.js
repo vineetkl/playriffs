@@ -62,7 +62,7 @@ function windowResized() {
 
 function preload() {
     //audios
-    bgloop = loadSound("audio/bgloop.mp3");
+    bgloop = loadSound("audio/citygirlintro.mp3");
     pwk = loadSound("audio/wk.mp3");
     psd = loadSound("audio/sd.mp3");
     pcr = loadSound("audio/cr.mp3");
@@ -125,7 +125,7 @@ function draw() {
     setGradient(0, 0, windowWidth, windowHeight, color1, color2, "Y");
 
     //bgstars
-    for (let i = 0; i < particles.length; i++) {
+    for (let i = 0; i < 60; i++) {
         particles[i].createParticle();
         particles[i].moveParticle();
         particles[i].joinParticles(particles.slice(i));
@@ -223,7 +223,7 @@ function keyPressed() {
         m1.play();
         fill(92, 255, 209);
         rect(0, 0, width, height);
-        vibrations.push(new AParticle(random(0, width), random(0, height)));
+        vibrations.push(new AParticle(random(width / 3, 2 * width / 3), random(height / 3, 2 * height / 3)));
 
     }
 
@@ -231,6 +231,8 @@ function keyPressed() {
     //s
     if (keyCode == '83') {
         h1.play();
+        fill(255, 255, 255);
+        rect(0, 0, width, height);
         vibrations.push(new SSParticle(width / 2, height / 2));
     }
     //d
@@ -252,10 +254,10 @@ function keyPressed() {
         fill(255, 244, 36);
         ellipse(50, 50, 5, 5);
         pct = 0.0;
-        beginX = random(80, 160);
+        beginX = random(width / 4, 3 * width / 4);
         beginY = random(80, 160);
-        endX = width + 5;
-        endY = height + 5;
+        endX = width / 2;
+        endY = height + 10;
         distX = endX - beginX;
         distY = endY - beginY;
 
@@ -592,8 +594,8 @@ class AParticle {
     }
 
     update() {
-        this.x = this.x + random(-100, 100);
-        this.y = this.y + random(-100, 100);
+        this.x = this.x + random(-50, 100);
+        this.y = this.y + random(-50, 100);
 
         let v = createVector(this.x, this.y);
 
@@ -631,8 +633,8 @@ class DParticle {
     }
 
     update() {
-        this.x = this.x + random(-100, 100);
-        this.y = this.y + random(-100, 100);
+        this.x = this.x + random(-80, 100);
+        this.y = this.y + random(-80, 100);
 
         let v = createVector(this.x, this.y);
 
