@@ -21,6 +21,29 @@
         animation-duration: 1s;
     }
     
+    img {
+        width: 40vw;
+        margin: auto;
+        text-align: center;
+        align-self: center;
+        display: block;
+    }
+    
+    p {
+        font-family: consolas;
+        font-size: 12px;
+        text-align: center;
+        color: aquamarine;
+        opacity: 50%;
+    }
+    
+    a {
+        color: aqua;
+        opacity: 50%;
+        font-style: italic;
+        text-decoration: none;
+    }
+    
     #key.hidden {
         display: none;
         margin-left: auto;
