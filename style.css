@@ -30,11 +30,12 @@
     }
     
     p {
-        font-family: consolas;
-        font-size: 12px;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: normal;
         text-align: center;
         color: aquamarine;
         opacity: 50%;
+        font-size: 12px;
     }
     
     a {

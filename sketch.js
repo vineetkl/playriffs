@@ -390,8 +390,8 @@ class Particle { // bg stars
         this.x = random(0, windowWidth);
         this.y = random(0, windowHeight);
         this.r = random(0, 2.5);
-        this.xSpeed = random(-0.1, 0.7);
-        this.ySpeed = random(-0.1, 0.7);
+        this.xSpeed = random(-0.1, 0.5);
+        this.ySpeed = random(-0.1, 0.5);
     }
 
     // creation of a particle.
