@@ -12,12 +12,11 @@
     
     #key {
         display: block;
-        margin-left: auto;
-        margin-right: auto;
+        margin: auto;
+        padding-top: 50px;
         width: 50%;
-        padding-top: 5%;
         visibility: visible;
-        z-index: 2;
+        z-index: 0;
         animation-duration: 1s;
     }
     
@@ -32,15 +31,17 @@
     p {
         font-family: 'Courier New', Courier, monospace;
         font-weight: normal;
-        text-align: center;
+        text-align: left;
         color: aquamarine;
-        opacity: 50%;
+        opacity: 75%;
         font-size: 12px;
+        line-height: 150%;
+        align-items: center;
     }
     
     a {
         color: aqua;
-        opacity: 50%;
+        opacity: 75%;
         font-style: italic;
         text-decoration: none;
     }
