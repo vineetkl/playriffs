@@ -32,9 +32,9 @@
         font-family: 'Courier New', Courier, monospace;
         font-weight: normal;
         text-align: left;
-        color: aquamarine;
+        color: rgb(161, 255, 224);
         opacity: 75%;
-        font-size: 12px;
+        font-size: 18px;
         line-height: 150%;
         align-items: center;
     }
