@@ -10,12 +10,15 @@ function toggle(k) {
 p5.disableFriendlyErrors = true
 
 let particles = []; // an array to add multiple particles for stars
+let nebula = []; // nebula particles for atmospheric effect
+let twinkleStars = []; // twinkling stars
 
 //var canvas1; //to place convas behind html
 
 let osc, playing, freq, amp; //four mouse or touch sound
 
 let ar = 0; //rotating arcs
+let time = 0; // for animated effects
 
 
 
@@ -100,14 +103,24 @@ function setup() {
 
     //
     bgloop.loop(); //loop bgmusic
-    //stars
+    //enhanced stars
     for (let i = 0; i < 2 * width / 10; i++) {
         particles.push(new Particle());
     }
+    
+    // Initialize nebula particles
+    for (let i = 0; i < 15; i++) {
+        nebula.push(new NebulaParticle());
+    }
+    
+    // Initialize twinkling stars
+    for (let i = 0; i < 25; i++) {
+        twinkleStars.push(new TwinkleParticle());
+    }
+    
     noStroke();
     distX = endX - beginX;
     distY = endY - beginY;
-
 
     //shooting star
     for (let i = 0; i < 2; i++) {
@@ -118,19 +131,32 @@ function setup() {
 }
 
 function draw() {
+    time += 0.01;
 
-    //background
-    var color1 = color(9, 27, 56); //gradient upper color
-    var color2 = color(30, 66, 125); //gradient lower color
-    setGradient(0, 0, windowWidth, windowHeight, color1, color2, "Y");
+    //enhanced night sky background
+    var color1 = color(5, 10, 25); // deeper night blue
+    var color2 = color(15, 25, 45); // midnight blue
+    var color3 = color(25, 35, 60); // horizon glow
+    
+    // Create a more complex gradient
+    setGradient(0, 0, windowWidth, windowHeight * 0.7, color1, color2, "Y");
+    setGradient(0, windowHeight * 0.7, windowWidth, windowHeight * 0.3, color2, color3, "Y");
+    
+    // Add subtle nebula effect
+    drawNebula();
 
-    //bgstars
-    for (let i = 0; i < 60; i++) {
+    //enhanced starfield
+    for (let i = 0; i < 80; i++) {
         particles[i].createParticle();
         particles[i].moveParticle();
         particles[i].joinParticles(particles.slice(i));
-
     }
+    
+    // Draw twinkling stars
+    drawTwinklingStars();
+    
+    // Draw constellation patterns
+    drawConstellations();
     //curved stars
     push();
     fill(0, 10);
@@ -169,9 +195,15 @@ function draw() {
     pop();
 
     push();
-    for (let i = 0; i < vibrations.length; i++) {
+    // Update and clean up particles
+    for (let i = vibrations.length - 1; i >= 0; i--) {
         vibrations[i].show();
         vibrations[i].update();
+        
+        // Remove dead particles
+        if (vibrations[i].isDead && vibrations[i].isDead()) {
+            vibrations.splice(i, 1);
+        }
     }
     pop();
 
@@ -221,10 +253,18 @@ function keyPressed() {
     //a
     if (keyCode == '65') {
         m1.play();
-        fill(92, 255, 209);
-        rect(0, 0, width, height);
-        vibrations.push(new AParticle(random(width / 3, 2 * width / 3), random(height / 3, 2 * height / 3)));
-
+        // Enhanced teal flash with gradient
+        push();
+        for (let i = 0; i < 5; i++) {
+            fill(92, 255, 209, 50 - i * 8);
+            rect(0, 0, width, height);
+        }
+        pop();
+        
+        // Multiple particles for richer effect
+        for (let i = 0; i < 3; i++) {
+            vibrations.push(new AParticle(random(width / 3, 2 * width / 3), random(height / 3, 2 * height / 3)));
+        }
     }
 
 
@@ -267,20 +307,26 @@ function keyPressed() {
     if (keyCode == '71') {
         h2.play();
 
-
         push();
-        fill(90, 252, 3, 255);
+        // Enhanced green flash with electric effect
+        fill(90, 252, 3, 200);
         rect(0, 0, width, height);
-        stroke(255);
-        line(0, 0, width, height);
-        line(0, 0, width, height);
-        line(0, 0, width, height);
-        ellipse(random(100, (width - 100)), random(100, (height - 100)));
+        
+        // Electric lightning effect
+        stroke(255, 255, 100);
+        strokeWeight(3);
+        for (let i = 0; i < 5; i++) {
+            line(random(width), 0, random(width), height);
+            line(0, random(height), width, random(height));
+        }
+        
+        // Glowing orbs
+        noStroke();
+        for (let i = 0; i < 8; i++) {
+            fill(255, 255, 100, 150);
+            ellipse(random(100, width - 100), random(100, height - 100), random(20, 60));
+        }
         pop();
-
-
-
-
     }
     //h
     if (keyCode == '72') {
@@ -384,22 +430,27 @@ function nstar(x, y, radius1, radius2, npoints) {
     }
     endShape(CLOSE);
 }
-class Particle { // bg stars
+class Particle { // enhanced bg stars
     // setting the co-ordinates, radius and the
     // speed of a particle in both the co-ordinates axes.
     constructor() {
         this.x = random(0, windowWidth);
         this.y = random(0, windowHeight);
-        this.r = random(0, 2.5);
-        this.xSpeed = random(-0.1, 0.5);
-        this.ySpeed = random(-0.1, 0.5);
+        this.r = random(0.5, 3);
+        this.xSpeed = random(-0.05, 0.05);
+        this.ySpeed = random(-0.05, 0.05);
+        this.brightness = random(150, 255);
+        this.twinkle = random(0, TWO_PI);
     }
 
     // creation of a particle.
     createParticle() {
         noStroke();
-        fill('rgba(200,169,169,random(0,1)');
+        // Enhanced star colors with subtle twinkle
+        let alpha = 150 + sin(this.twinkle + time * 2) * 50;
+        fill(this.brightness, this.brightness - 20, this.brightness + 20, alpha);
         circle(this.x, this.y, this.r);
+        this.twinkle += 0.02;
     }
 
     // setting the particle in motion.
@@ -432,43 +483,50 @@ class SSParticle {
         this.x = x;
         this.y = y;
         this.history = [];
+        this.life = 255;
+        this.fadeRate = 3;
     }
 
     update() {
         this.x = this.x + (4);
         this.y = this.y + (1000);
+        this.life -= this.fadeRate;
 
         let v = createVector(this.x, this.y);
-
         this.history.push(v);
-        //console.log(this.history.length);
 
-        if (this.history.length > 5) {
+        if (this.history.length > 8) {
             this.history.splice(0, 1);
         }
     }
 
     show() {
-        stroke(255, 245, 110, 50);
-        beginShape();
-        for (let i = 0; i < this.history.length; i++) {
-            let pos = this.history[i];
-            noFill();
-            vertex(pos.x, pos.y);
-            endShape();
+        if (this.life <= 0) return;
+        
+        push();
+        let alpha = map(this.life, 0, 255, 0, 255);
+        
+        // Enhanced ripple effect
+        stroke(255, 245, 110, alpha * 0.3);
+        strokeWeight(0.5);
+        noFill();
+        
+        for (let i = 0; i < 8; i++) {
+            let size = (width * 0.1) + i * 15;
+            let rippleAlpha = alpha * (1 - i * 0.1);
+            stroke(255, 255, 242, rippleAlpha);
+            ellipse(this.x, this.y, size, size);
         }
-
-        stroke(255, 255, 242);
-        strokeWeight(0.2);
-        noFill(255, 255, 242);
-        ellipse(this.x, this.y, width, width);
-        ellipse(this.x, this.y, width - 10, width - 10);
-        ellipse(this.x, this.y, width - 20, width - 20);
-        ellipse(this.x, this.y, width - 30, width - 30);
-        ellipse(this.x, this.y, width - 40, width - 40);
-        ellipse(this.x, this.y, width - 50, width - 50);
-        ellipse(this.x, this.y, width - 60, width - 60);
-        ellipse(this.x, this.y, width - 70, width - 70);
+        
+        // Central glow
+        fill(255, 255, 242, alpha);
+        noStroke();
+        ellipse(this.x, this.y, 8, 8);
+        pop();
+    }
+    
+    isDead() {
+        return this.life <= 0;
     }
 }
 
@@ -681,4 +739,101 @@ class roundtrial {
         ar = ar + 0.001;
         pop();
     }
+}
+
+// New particle classes for enhanced night sky
+class NebulaParticle {
+    constructor() {
+        this.x = random(width);
+        this.y = random(height);
+        this.size = random(50, 200);
+        this.alpha = random(5, 15);
+        this.drift = random(0.1, 0.3);
+        this.color = random(['purple', 'blue', 'pink']);
+    }
+    
+    show() {
+        push();
+        let colors = {
+            purple: [80, 20, 120],
+            blue: [20, 50, 120], 
+            pink: [120, 40, 80]
+        };
+        let c = colors[this.color];
+        fill(c[0], c[1], c[2], this.alpha);
+        noStroke();
+        ellipse(this.x, this.y, this.size);
+        this.x += sin(time * this.drift) * 0.5;
+        this.y += cos(time * this.drift) * 0.3;
+        pop();
+    }
+}
+
+class TwinkleParticle {
+    constructor() {
+        this.x = random(width);
+        this.y = random(height);
+        this.brightness = random(200, 255);
+        this.twinkleSpeed = random(0.02, 0.08);
+        this.phase = random(TWO_PI);
+    }
+    
+    show() {
+        push();
+        let alpha = 100 + sin(this.phase + time * this.twinkleSpeed) * 155;
+        fill(this.brightness, this.brightness - 30, this.brightness, alpha);
+        noStroke();
+        
+        // Create cross-shaped twinkle
+        let size = 1 + sin(this.phase + time * this.twinkleSpeed) * 2;
+        ellipse(this.x, this.y, size);
+        
+        // Add sparkle lines
+        if (alpha > 200) {
+            stroke(255, alpha * 0.8);
+            strokeWeight(0.5);
+            line(this.x - 3, this.y, this.x + 3, this.y);
+            line(this.x, this.y - 3, this.x, this.y + 3);
+        }
+        pop();
+    }
+}
+
+// Helper functions for night sky effects
+function drawNebula() {
+    for (let i = 0; i < nebula.length; i++) {
+        nebula[i].show();
+    }
+}
+
+function drawTwinklingStars() {
+    for (let i = 0; i < twinkleStars.length; i++) {
+        twinkleStars[i].show();
+    }
+}
+
+function drawConstellations() {
+    // Draw subtle constellation patterns
+    push();
+    stroke(100, 120, 150, 80);
+    strokeWeight(0.5);
+    
+    // Simple constellation pattern
+    let constellationPoints = [
+        {x: width * 0.2, y: height * 0.3},
+        {x: width * 0.25, y: height * 0.25},
+        {x: width * 0.3, y: height * 0.35},
+        {x: width * 0.7, y: height * 0.2},
+        {x: width * 0.75, y: height * 0.15},
+        {x: width * 0.8, y: height * 0.25}
+    ];
+    
+    // Connect some points to form constellation
+    for (let i = 0; i < constellationPoints.length - 1; i += 2) {
+        if (i + 1 < constellationPoints.length) {
+            line(constellationPoints[i].x, constellationPoints[i].y, 
+                 constellationPoints[i + 1].x, constellationPoints[i + 1].y);
+        }
+    }
+    pop();
 }
